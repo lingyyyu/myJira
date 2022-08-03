@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import SearchPanel from './SearchPanel'
 import List from './List'
-import { cleanObject } from 'utils'
+import { cleanObject, useDebounce, useMount } from 'utils'
 import * as qs from 'qs'
 
 
@@ -20,21 +20,25 @@ export default function ProjectList() {
 
   const [list, setList] = useState([])
 
+  //实现输入框1秒刷新一次状态改变的效果
+  const debouncedParam = useDebounce(param, 1000)
+
   useEffect(() => {
-    fetch(`${apiURL}/projects?${qs.stringify(cleanObject(param))}`).then(async (response) => {
+    fetch(`${apiURL}/projects?${qs.stringify(cleanObject(debouncedParam))}`).then(async (response) => {
       if (response.ok) {
         setList(await response.json())
       }
     })
-  }, [param])
+  }, [debouncedParam])
 
-  useEffect(() => {
+  //使用自定义cutomhook取代useEffect
+  useMount(() => {
     fetch(`${apiURL}/users`).then(async (response) => {
       if (response.ok) {
         setUsers(await response.json())
       }
     })
-  }, [])
+  })
 
   return (
     <div>
