@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import SearchPanel from './SearchPanel'
 import List from './List'
+import { cleanObject } from 'utils'
+import * as qs from 'qs'
 
 
 //npm start时读的是.env.development中的变量
@@ -19,21 +21,11 @@ export default function ProjectList() {
   const [list, setList] = useState([])
 
   useEffect(() => {
-    if(param.personId=='')
-    {
-      fetch(`${apiURL}/projects`).then(async (response) => {
-        if (response.ok) {
-          setList(await response.json())
-        }
-      })
-    }
-    else{
-      fetch(`${apiURL}/projects?personId=${param.personId}`).then(async (response) => {
-        if (response.ok) {
-          setList(await response.json())
-        }
-      })
-    }
+    fetch(`${apiURL}/projects?${qs.stringify(cleanObject(param))}`).then(async (response) => {
+      if (response.ok) {
+        setList(await response.json())
+      }
+    })
   }, [param])
 
   useEffect(() => {
