@@ -1,9 +1,26 @@
 import React, { useEffect, useState } from 'react'
 
-export default function SearchPanel(props) {
+
+export interface User {
+  id: string,
+  name: string,
+  email: string,
+  title: string,
+  organization: string,
+}
+
+interface SearchPanelProps {
+  users: User[],
+  param: {
+    name: string,
+    personId: string,
+  }
+  setParam: (param: SearchPanelProps['param']) => void
+}
+
+export default function SearchPanel(props: SearchPanelProps) {
 
   const { param, setParam, users } = props
-
 
 
   return (

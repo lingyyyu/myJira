@@ -1,6 +1,18 @@
 import React from 'react'
+import { User } from './SearchPanel'
 
-export default function List(props) {
+interface Project {
+  id: string,
+  name: string,
+  personId: string,
+  pin: string,
+  organization: string,
+}
+interface Listprops {
+  list: Project[],
+  users: User[],
+}
+export default function List(props: Listprops) {
   const { list, users } = props
   return (
     <table>

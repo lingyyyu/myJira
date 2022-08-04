@@ -20,8 +20,8 @@ export default function ProjectList() {
 
   const [list, setList] = useState([])
 
-  //实现输入框1秒刷新一次状态改变的效果
-  const debouncedParam = useDebounce(param, 1000)
+  //实现输入框0.2秒刷新一次状态改变的效果
+  const debouncedParam = useDebounce(param, 200)
 
   useEffect(() => {
     fetch(`${apiURL}/projects?${qs.stringify(cleanObject(debouncedParam))}`).then(async (response) => {
