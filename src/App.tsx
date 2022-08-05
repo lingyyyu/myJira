@@ -3,14 +3,19 @@ import logo from './logo.svg';
 import './App.css';
 import ProjectList from 'screens/projectList/ProjectList';
 import Try_useArray from 'Try_useArray';
-import Login from 'screens/login/Login';
+import Login from 'unauthenticated-app/Login';
+import { useAuth } from 'context/auth-context';
+import AuthenticatedApp from 'authenticated-app';
+import { UnauthenticatedApp } from 'unauthenticated-app';
 
 function App() {
+  const { user } = useAuth()
+
   return (
     <div className="App">
       {/* <ProjectList/> */}
       {/* <Try_useArray/> */}
-      <Login/>
+      {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
     </div>
   );
 }

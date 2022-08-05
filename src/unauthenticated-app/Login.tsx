@@ -1,31 +1,26 @@
+import { useAuth } from 'context/auth-context'
 import React, { FormEvent } from 'react'
 
 
-interface Base {
-    id: number
-}
-interface Person extends Base {
-    name: string
-}
-const p: Person = { name: 'lily', id: 1 }
 
 const apiURL = process.env.REACT_APP_API_URL
 
 export default function Login() {
 
-    const login = (param: { username: string, password: string }) => {
-        fetch(`${apiURL}/login`, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(param)
-        }).then(async (response) => {
-            if (response.ok) {
+    // const login = (param: { username: string, password: string }) => {
+    //     fetch(`${apiURL}/login`, {
+    //         method: 'POST',
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify(param)
+    //     }).then(async (response) => {
+    //         if (response.ok) {
 
-            }
-        })
-    }
+    //         }
+    //     })
+    // }
+    const { login, user } = useAuth()
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
