@@ -15,6 +15,7 @@ function App() {
     <div className="App">
       {/* <ProjectList/> */}
       {/* <Try_useArray/> */}
+      {/* 根据user是否为空决定是否切换登录页面 */}
       {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
     </div>
   );
