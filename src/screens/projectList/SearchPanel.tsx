@@ -1,3 +1,4 @@
+import { Input, Select } from 'antd'
 import React, { useEffect, useState } from 'react'
 
 
@@ -27,21 +28,42 @@ export default function SearchPanel(props: SearchPanelProps) {
   return (
     <form action="">
       <div>
-        <input type="text" value={param.name} onChange={event => setParam({
+        <Input type="text" value={param.name} onChange={event => setParam({
           ...param,
           name: event.target.value,
         })} />
 
-        <select value={param.personId} onChange={event => setParam({
+        <Select value={param.personId} onChange={value=> setParam({
           ...param,
-          personId: event.target.value
+          personId: value
         })}>
-          <option value={''}>负责人</option>
+          <Select.Option value={''}>负责人</Select.Option>
           {
-            users.map((user) => <option key={user.id} value={user.id}>{user.name}</option>)
+            users.map((user) => <Select.Option key={user.id} value={user.id}>{user.name}</Select.Option>)
           }
-        </select>
+        </Select>
       </div>
     </form>
   )
+
+  // return (
+  //   <form action="">
+  //     <div>
+  //       <input type="text" value={param.name} onChange={event => setParam({
+  //         ...param,
+  //         name: event.target.value,
+  //       })} />
+
+  //       <select value={param.personId} onChange={event => setParam({
+  //         ...param,
+  //         personId: event.target.value
+  //       })}>
+  //         <option value={''}>负责人</option>
+  //         {
+  //           users.map((user) => <option key={user.id} value={user.id}>{user.name}</option>)
+  //         }
+  //       </select>
+  //     </div>
+  //   </form>
+  // )
 }

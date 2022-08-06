@@ -49,3 +49,4 @@ export const useHttp = () => {
     //从函数类型的参数中使用的类型构造一个元组类型Type
     return (...[endpoint, config]: Parameters<typeof http>) => http(endpoint, { ...config, token: user?.token })
 }
+
