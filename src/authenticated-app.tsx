@@ -3,19 +3,32 @@ import { Row } from 'components/lib'
 import { useAuth } from 'context/auth-context'
 import React from 'react'
 import ProjectList from 'screens/projectList/ProjectList'
+import {ReactComponent as SoftwareLogo} from 'assets/software-logo.svg'
+import { Dropdown, Menu } from 'antd'
 
 export default function AuthenticatedApp() {
-  const { logout } = useAuth()
+  const { logout ,user } = useAuth()
   return (
     <div>
       <Header between={true}>
         <HeaderLeft gap={true}>
+          <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
           <h3>logo</h3>
           <h3>项目</h3>
           <h3>用户</h3>
         </HeaderLeft>
         <HeaderRight>
-          <button onClick={logout}>登出</button>
+        {/* overlay是下拉框 */}
+          <Dropdown overlay={
+            <Menu>
+              <Menu.Item key={'logout'}>
+                <a onClick={logout}>登出</a>
+              </Menu.Item>
+            </Menu>
+          }>
+            <a onClick={e=>e.preventDefault()}>Hi, {user?.name}</a>
+
+          </Dropdown>
         </HeaderRight>
       </Header>
       <Main>
@@ -33,6 +46,9 @@ const Container = styled.div`
 `;
 
 const Header = styled(Row)`
+padding: 3.2rem;
+box-shadow: 0 0 5px 0 rgba(0,0,0,0.1);
+z-index: 1;
 `;
 
 //引入自定义样式组件,注意千万不要加.div，会导致运行不了且不报错
