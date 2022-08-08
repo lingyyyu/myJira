@@ -2,14 +2,15 @@ import { useEffect, useState } from "react"
 
 export const isFalsy = (value: unknown) => value === 0 ? false : !value
 
+export const isVoid = (value: unknown) => value === undefined || value === null || value === ''
+
 //判断传入的对象是否有键值为空，为空则删除
-export const cleanObject = (object: object) => {
+//如果参数直接传入object:object，ts会直接将object识别成null。所以类型要用{[key : string]: unknown}键值对取代object
+export const cleanObject = (object: {[key : string]: unknown}) => {
     const result = { ...object }
     Object.keys(result).map((key) => {
-        //@ts-ignore
         const value = result[key]
-        if (isFalsy(value)) {
-            //@ts-ignore
+        if (isVoid(value)) {
             delete result[key]
         }
     })

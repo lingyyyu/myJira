@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {loadDevTools} from 'jira-dev-tool'
+import {loadServer,DevTools} from 'jira-dev-tool'
 //务必在jira-dev-tool后面引入antd样式
 import 'antd/dist/antd.less'
 //create-react-app要配置antd还需要安装craco并修改配置文件
@@ -18,9 +18,10 @@ const root = ReactDOM.createRoot(
 //   </React.StrictMode>
 // );
 
-loadDevTools(()=> root.render(
+loadServer(()=> root.render(
   <React.StrictMode>
     <AppProviders>
+      <DevTools/>
       <App />
     </AppProviders>
   </React.StrictMode>

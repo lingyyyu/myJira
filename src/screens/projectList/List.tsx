@@ -18,7 +18,7 @@ interface Listprops {
 export default function List(props: Listprops) {
   const { list, users } = props
 
-  return <Table pagination={false} columns={[
+  return <Table rowKey={"id"} pagination={false} columns={[
     {
       title:'名称',
       dataIndex:'name',   //dataIndex表示去对应的project中读取对应的name属性
