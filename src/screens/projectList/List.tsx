@@ -1,9 +1,9 @@
-import { Table } from 'antd'
+import { Table, TableProps } from 'antd'
 import React from 'react'
 import { User } from './SearchPanel'
 import dayjs from 'dayjs'
 
-interface Project {
+export interface Project {
   id: string,
   name: string,
   personId: string,
@@ -11,12 +11,12 @@ interface Project {
   organization: string,
   created: number,
 }
-interface Listprops {
-  list: Project[],
+
+//TableProps是antd提供的组件Table所需的所有参数的集合
+interface Listprops extends TableProps<Project>{
   users: User[],
 }
-export default function List(props: Listprops) {
-  const { list, users } = props
+export default function List({users , ...props}: Listprops) {
 
   return <Table rowKey={"id"} pagination={false} columns={[
     {
@@ -47,8 +47,9 @@ export default function List(props: Listprops) {
         </span>
       }
     }
-  ]} dataSource={list}/>
-  //dataSource是数据源
+  ]} 
+  {...props}//将props所存储的TableProps参数展开
+  />
 
 
   // return (
