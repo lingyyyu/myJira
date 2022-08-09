@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import SearchPanel from './SearchPanel'
 import List, { Project } from './List'
-import { cleanObject, useDebounce, useMount } from 'utils'
+import { cleanObject, useDebounce, useDocumentTitle, useMount } from 'utils'
 import * as qs from 'qs'
 import { useHttp } from 'utils/http'
 import styled from '@emotion/styled'
@@ -35,6 +35,7 @@ export default function ProjectList() {
   //使用自定义hook来取代user state
   const { data: users } = useUsers()
 
+  useDocumentTitle('项目列表',false)
 
   // useEffect(() => {
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export const isFalsy = (value: unknown) => value === 0 ? false : !value
 
@@ -66,4 +66,26 @@ export const useArray = <T>(objArr: T[]): useArrayReturn<T> => {
         removeIndex,
         clear
     }
+}
+
+//自定义改变标题的hook
+export const useDocumentTitle = (title: string , keepOnUnmount:boolean = true) => {
+    //useRef
+    //返回一个可变的 ref 对象，该对象只有个 current 属性，初始值为传入的参数( initialValue )
+    //当更新 current 值时并不会 re-render ，这是与 useState 不同的地方
+    //返回的 ref 对象在组件的整个生命周期内保持不变
+    const oldTitle = useRef(document.title).current
+    
+    useEffect(()=>{
+        document.title=title
+    },[title])
+
+    //页面卸载时退回旧title
+    useEffect(()=>{
+        return ()=>{
+            if(!keepOnUnmount){
+                document.title = oldTitle
+            }
+        }
+    },[keepOnUnmount, oldTitle])
 }
