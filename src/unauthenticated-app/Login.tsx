@@ -2,11 +2,12 @@ import { useAuth } from 'context/auth-context'
 import React, { FormEvent } from 'react'
 import { Button, Form, Input } from 'antd'
 import { LongButton } from 'unauthenticated-app'
+import { useAsync } from 'utils/use-async'
 
 
 const apiURL = process.env.REACT_APP_API_URL
 
-export default function Login() {
+export default function Login({ onError }: { onError: (error: Error) => void }) {
 
     // const login = (param: { username: string, password: string }) => {
     //     fetch(`${apiURL}/login`, {
@@ -22,6 +23,7 @@ export default function Login() {
     //     })
     // }
     const { login, user } = useAuth()
+    const {run , isLoading} = useAsync(undefined,{throwOnError: true})
 
     // const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     //     event.preventDefault()
@@ -31,9 +33,20 @@ export default function Login() {
     // }
 
     //antd会自动获取Form中的name属性值对应的键值
-    const handleSubmit = (values: { username: string, password: string }) => {
+    const handleSubmit = async (values: { username: string, password: string }) => {
         console.log(values)
-        login(values);
+        // try {
+        //     //这里一定要加上async await
+        //     await login(values);
+        // } catch (error) {
+        //     if(error) onError(error as Error)
+        // }
+        try {
+            await run(login(values))
+        } catch (error) {
+            onError(error as Error)
+        }
+        //login(values).catch(err=>onError(err))
     }
 
     return (
@@ -46,7 +59,7 @@ export default function Login() {
                 <Input placeholder='密码' type="text" id='password' />
             </Form.Item>
             <Form.Item>
-                <LongButton htmlType='submit' type='primary'>登录</LongButton>
+                <LongButton loading={isLoading} htmlType='submit' type='primary'>登录</LongButton>
             </Form.Item>
         </Form>
     )

@@ -11,8 +11,14 @@ const defaultInitialState: State<null> ={
     data:null,
     error:null
 }
+
+const defaultConfig = {
+    throwOnError: false
+}
+
 //自定义异步操作hook
-export const useAsync = <D>(initialState?: State<D>)=>{
+export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defaultConfig)=>{
+    const config = {...defaultConfig, ...initialConfig}
     const [state, setState] = useState<State<D>>({
         ...defaultInitialState,
         ...initialState
@@ -42,6 +48,7 @@ export const useAsync = <D>(initialState?: State<D>)=>{
             return data //因为是promise，内部最好要有返回值
         }).catch(error => {
             setError(error)
+            if(config.throwOnError) return Promise.reject(error)
             return error
         })
     }
