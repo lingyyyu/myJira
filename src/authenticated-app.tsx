@@ -9,7 +9,7 @@ import { Button, Dropdown, Menu } from 'antd'
 export default function AuthenticatedApp() {
   const { logout ,user } = useAuth()
   return (
-    <div>
+    <Container>
       <Header between={true}>
         <HeaderLeft gap={true}>
           <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
@@ -34,7 +34,7 @@ export default function AuthenticatedApp() {
       <Main>
         <ProjectList />
       </Main>
-    </div>
+    </Container>
   )
 }
 
