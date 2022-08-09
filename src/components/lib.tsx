@@ -1,4 +1,6 @@
 import styled from "@emotion/styled";
+import { Spin, Typography } from "antd";
+import { DevTools } from "jira-dev-tool";
 //import styled from "@emotion/styled/macro";
 
 //<>中写要传入的参数
@@ -17,3 +19,20 @@ margin-bottom: ${props => props.marginBottom + 'rem'};
     margin-right: ${props => typeof props.gap === 'number' ? props.gap +'rem' : props.gap ? '2rem' : undefined};
 }
 `
+
+//覆盖整个页面的加载样式
+const FullPage = styled.div`
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+`
+export const FullPageLoading = () => <FullPage>
+    <Spin size="large"/>
+</FullPage>
+
+//请求失败时整个页面显示错误信息
+export const FullPageErrorFallback = ({error} : {error:Error | null}) => <FullPage>
+    <DevTools/>
+    <Typography.Text type="danger">{error?.message}</Typography.Text>
+</FullPage>
