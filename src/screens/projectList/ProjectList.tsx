@@ -9,6 +9,7 @@ import { Typography } from 'antd'
 import { useAsync } from 'utils/use-async'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
+import { useUrlQueryParam } from 'utils/url'
 
 
 //npm start时读的是.env.development中的变量
@@ -17,12 +18,9 @@ const apiURL = process.env.REACT_APP_API_URL
 
 export default function ProjectList() {
 
-  const [param, setParam] = useState({
-    name: '',
-    personId: '',
-  })
-
-
+  //('name' | 'personId')[]   意思是键值为name或personId的数组，写法类似于string[]
+  //const [keys] = useState<('name' | 'personId')[]>(['name','personId'])
+  const [param, setParam] = useUrlQueryParam(['name','personId'])
 
   //实现输入框0.2秒刷新一次状态改变的效果
   const debouncedParam = useDebounce(param, 200)
@@ -70,7 +68,6 @@ export default function ProjectList() {
   //   // })
   // })
 
-
   return (
     <Container>
       <h1>项目列表</h1>
@@ -84,3 +81,6 @@ export default function ProjectList() {
 const Container = styled.div`
 padding: 3.2rem;
 `
+
+//打开whyDidYouRender排查工具
+//ProjectList.whyDidYouRender = true

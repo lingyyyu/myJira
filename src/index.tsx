@@ -9,6 +9,9 @@ import 'antd/dist/antd.less'
 
 import { AppProviders } from 'context';
 
+//导入反复渲染排查工具
+import './wdyr'
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
