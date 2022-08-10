@@ -19,6 +19,7 @@ export default function AuthenticatedApp() {
           <Routes>
             <Route path='/projects' element={<ProjectList/>}/>
             <Route path='/projects/:projectId/*' element={<Project/>}/>
+            <Route index element={<ProjectList/>} />
           </Routes>
         </BrowserRouter>
       </Main>

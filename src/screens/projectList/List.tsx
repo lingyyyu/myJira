@@ -25,7 +25,10 @@ export default function List({users , ...props}: Listprops) {
       //dataIndex:'name',   //dataIndex表示去对应的project中读取对应的name属性
       sorter:(a,b)=>a.name.localeCompare(b.name),  //排序
       render(value,project){
-        return <Link to={ String(project.id) }>{project.name}</Link>
+        return (
+          //<Link to={String(project.id)}>{project.name}</Link>
+          <Link to={`/projects/${String(project.id)}`}>{project.name}</Link>
+        )
       }
     },
     {
