@@ -89,3 +89,6 @@ export const useDocumentTitle = (title: string , keepOnUnmount:boolean = true) =
         }
     },[keepOnUnmount, oldTitle])
 }
+
+//重置路由的方法
+export const resetRoute = () => window.location.href = window.location.origin

@@ -26,6 +26,7 @@ export default function List({users , ...props}: Listprops) {
       sorter:(a,b)=>a.name.localeCompare(b.name),  //排序
       render(value,project){
         return (
+          //加上 / 表示绝对路径，不加 / 表示从当前路由开始的相对路径。下面2种写法都行
           //<Link to={String(project.id)}>{project.name}</Link>
           <Link to={`/projects/${String(project.id)}`}>{project.name}</Link>
         )

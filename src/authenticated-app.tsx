@@ -8,6 +8,7 @@ import { Button, Dropdown, Menu } from 'antd'
 //yarn add react-router-dom@6
 import {BrowserRouter, Navigate , Route , Routes} from 'react-router-dom'
 import Project from 'screens/project/Project'
+import { resetRoute } from 'utils'
 
 export default function AuthenticatedApp() {
 
@@ -36,8 +37,10 @@ const PageHeader = () => {
 
   return <Header between={true}>
     <HeaderLeft gap={true}>
-      <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
-      <h3>logo</h3>
+      {/* 重置路由按钮 */}
+      <Button type='link' onClick={resetRoute}>
+        <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
+      </Button>
       <h3>项目</h3>
       <h3>用户</h3>
     </HeaderLeft>
