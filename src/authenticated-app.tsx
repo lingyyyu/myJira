@@ -5,39 +5,56 @@ import React from 'react'
 import ProjectList from 'screens/projectList/ProjectList'
 import {ReactComponent as SoftwareLogo} from 'assets/software-logo.svg'
 import { Button, Dropdown, Menu } from 'antd'
+//yarn add react-router-dom@6
+import {BrowserRouter, Navigate , Route , Routes} from 'react-router-dom'
+import Project from 'screens/project/Project'
 
 export default function AuthenticatedApp() {
-  const { logout ,user } = useAuth()
-  return (
-    <Container>
-      <Header between={true}>
-        <HeaderLeft gap={true}>
-          <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
-          <h3>logo</h3>
-          <h3>项目</h3>
-          <h3>用户</h3>
-        </HeaderLeft>
-        <HeaderRight>
-        {/* overlay是下拉框 */}
-          <Dropdown overlay={
-            <Menu>
-              <Menu.Item key={'logout'}>
-                <Button type='link' onClick={logout}>登出</Button>
-              </Menu.Item>
-            </Menu>
-          }>
-            <Button type='link' onClick={e=>e.preventDefault()}>Hi, {user?.name}</Button>
 
-          </Dropdown>
-        </HeaderRight>
-      </Header>
+  return (
+    <Container>   
+      <PageHeader/> 
       <Main>
-        <ProjectList />
+        <BrowserRouter>
+          <Routes>
+            <Route path='/projects' element={<ProjectList/>}/>
+            <Route path='/projects/:projectId/*' element={<Project/>}/>
+          </Routes>
+        </BrowserRouter>
       </Main>
     </Container>
   )
 }
 
+//path='/projects/:projectId/*'
+//:号代表后面是个变量。    *号代表什么都可以
+
+
+const PageHeader = () => {
+  const { logout ,user } = useAuth()
+
+  return <Header between={true}>
+    <HeaderLeft gap={true}>
+      <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
+      <h3>logo</h3>
+      <h3>项目</h3>
+      <h3>用户</h3>
+    </HeaderLeft>
+    <HeaderRight>
+    {/* overlay是下拉框 */}
+      <Dropdown overlay={
+        <Menu>
+          <Menu.Item key={'logout'}>
+            <Button type='link' onClick={logout}>登出</Button>
+          </Menu.Item>
+        </Menu>
+      }>
+        <Button type='link' onClick={e=>e.preventDefault()}>Hi, {user?.name}</Button>
+
+      </Dropdown>
+    </HeaderRight>
+  </Header>
+}
 
 const Container = styled.div`
   display: grid;

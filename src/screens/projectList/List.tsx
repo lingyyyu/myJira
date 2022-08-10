@@ -2,6 +2,7 @@ import { Table, TableProps } from 'antd'
 import React from 'react'
 import { User } from './SearchPanel'
 import dayjs from 'dayjs'
+import { Link } from 'react-router-dom'
 
 export interface Project {
   id: string,
@@ -21,8 +22,11 @@ export default function List({users , ...props}: Listprops) {
   return <Table rowKey={"id"} pagination={false} columns={[
     {
       title:'名称',
-      dataIndex:'name',   //dataIndex表示去对应的project中读取对应的name属性
-      sorter:(a,b)=>a.name.localeCompare(b.name)  //排序
+      //dataIndex:'name',   //dataIndex表示去对应的project中读取对应的name属性
+      sorter:(a,b)=>a.name.localeCompare(b.name),  //排序
+      render(value,project){
+        return <Link to={ String(project.id) }>{project.name}</Link>
+      }
     },
     {
       title:'部门',
