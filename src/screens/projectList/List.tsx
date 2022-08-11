@@ -3,6 +3,8 @@ import React from 'react'
 import { User } from './SearchPanel'
 import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
+import { Pin } from 'components/pin'
+import { useEditProject } from 'utils/project'
 
 export interface Project {
   id: number,
@@ -16,10 +18,31 @@ export interface Project {
 //TableProps是antd提供的组件Table所需的所有参数的集合
 interface Listprops extends TableProps<Project>{
   users: User[],
+  refresh?: ()=> void
 }
 export default function List({users , ...props}: Listprops) {
 
+  //使用编辑Project数据的自定义钩子
+  const {mutate} = useEditProject()
+
   return <Table rowKey={"id"} pagination={false} columns={[
+    {
+      //星星
+      //渲染标题星星
+      title: <Pin checked={true} disabled={true}/>,
+      //渲染每个选项的星星
+      render(value, project){
+        return <Pin checked={project.pin} onCheckedChange={ async (pin) => {
+          //调用修改project的自定义hook
+          await mutate({id:project.id, pin})
+          if(props?.refresh)
+          {
+            //调用传过来的刷新页面的方法
+            props.refresh()
+          }
+        } }/>
+      }
+    },
     {
       title:'名称',
       //dataIndex:'name',   //dataIndex表示去对应的project中读取对应的name属性

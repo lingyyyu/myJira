@@ -31,7 +31,7 @@ export default function ProjectList() {
   // const client=useHttp()
 
   //使用自定义hook来取代list，isLoading，error这些state
-  const { isLoading, error, data: list } = useProjects(debouncedParam)
+  const { isLoading, error, data: list, retry } = useProjects(debouncedParam)
   //使用自定义hook来取代user state
   const { data: users } = useUsers()
 
@@ -74,7 +74,7 @@ export default function ProjectList() {
       <h1>项目列表</h1>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <Typography.Text type='danger'>{error.message}</Typography.Text> : null}
-      <List loading={isLoading} dataSource={list || []} users={users || []} />
+      <List refresh={retry} loading={isLoading} dataSource={list || []} users={users || []} />
     </Container>
   )
 }

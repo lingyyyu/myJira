@@ -23,6 +23,7 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
         ...defaultInitialState,
         ...initialState
     })
+    const [retry,setRetry] = useState( ()=> ()=>{} )
 
     const setData = (data : D) => setState({
         data,
@@ -37,11 +38,19 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
     })
 
     //run用来触发异步请求
-    const run = (promise: Promise<D>) => {
+    const run = (promise: Promise<D>, runConfig?: {retry: () => Promise<D>}) => {
         //没有.then方法就代表不是promise
         if(!promise || !promise.then){
             throw new Error('请传入 Promise 类型数据')
         }
+        //调用retry时会重新跑一遍run，让state状态刷新
+        //注意必须用高阶函数存储函数，不然会无限循环
+        setRetry( ()=> ()=> {
+            if(runConfig?.retry){
+                run(runConfig?.retry(), runConfig)
+            }
+        } )
+
         setState({...state,stat:'loading'})
         return promise.then(data => {
             setData(data)
@@ -52,6 +61,9 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
             return error
         })
     }
+
+    
+    
     
     return{
         isIdle: state.stat === 'idle',
@@ -61,6 +73,7 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
         run,
         setData,
         setError,
+        retry,
         ...state
     }
 }
