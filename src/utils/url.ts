@@ -8,6 +8,7 @@ export const useUrlQueryParam = <K extends string>(keys:K[]) => {
     //解构名字可自定
     const [searchParams, setSearchParam] = useSearchParams()
     return [
+        //用useMemo解决重复渲染
         useMemo(() => keys.reduce( (prev,key) => {
                 //.get(name)获取键为name的param参数
                 return {...prev, [key]: searchParams.get(key) || ''}

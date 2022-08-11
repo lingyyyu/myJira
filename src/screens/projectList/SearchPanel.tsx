@@ -4,11 +4,13 @@ import {jsx} from '@emotion/react'
 
 
 import { Form, Input, Select } from 'antd'
+import UserSelect from 'components/user-select'
 import React, { useEffect, useState } from 'react'
+import { Project } from './List'
 
 
 export interface User {
-  id: string,
+  id: number,
   name: string,
   email: string,
   title: string,
@@ -18,10 +20,12 @@ export interface User {
 
 interface SearchPanelProps {
   users: User[],
-  param: {
-    name: string,
-    personId: string,
-  }
+  //使用utility type取参
+  param: Partial<Pick<Project, 'name'|'personId'>>,
+  // param: {
+  //   name: string,
+  //   personId: string,
+  // }
   setParam: (param: SearchPanelProps['param']) => void
 }
 
@@ -40,7 +44,14 @@ export default function SearchPanel(props: SearchPanelProps) {
         })} />
       </Form.Item>
       <Form.Item>
-        <Select value={param.personId} onChange={value=> setParam({
+        <UserSelect 
+          defaultOptionName='负责人'
+          value={param.personId} 
+          onChange={value=> setParam({
+              ...param,
+              personId: value
+            })}/>
+        {/* <Select value={param.personId} onChange={value=> setParam({
             ...param,
             personId: value
           })}>
@@ -48,7 +59,7 @@ export default function SearchPanel(props: SearchPanelProps) {
             {
               users.map((user) => <Select.Option key={user.id} value={String(user.id)}>{user.name}</Select.Option>)
             }
-          </Select>
+          </Select> */}
       </Form.Item>
     </Form>
   )

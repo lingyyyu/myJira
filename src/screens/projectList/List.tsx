@@ -5,10 +5,10 @@ import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 
 export interface Project {
-  id: string,
+  id: number,
   name: string,
-  personId: string,
-  pin: string,
+  personId: number,
+  pin: boolean,
   organization: string,
   created: number,
 }

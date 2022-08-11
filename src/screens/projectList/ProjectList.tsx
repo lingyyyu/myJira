@@ -10,6 +10,7 @@ import { useAsync } from 'utils/use-async'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
 import { useUrlQueryParam } from 'utils/url'
+import { useProjectsSearchParams } from './util'
 
 
 //npm start时读的是.env.development中的变量
@@ -17,10 +18,11 @@ import { useUrlQueryParam } from 'utils/url'
 const apiURL = process.env.REACT_APP_API_URL
 
 export default function ProjectList() {
+  useDocumentTitle('项目列表',false)
 
   //('name' | 'personId')[]   意思是键值为name或personId的数组，写法类似于string[]
   //const [keys] = useState<('name' | 'personId')[]>(['name','personId'])
-  const [param, setParam] = useUrlQueryParam(['name','personId'])
+  const [param,setParam] = useProjectsSearchParams()
 
   //实现输入框0.2秒刷新一次状态改变的效果
   const debouncedParam = useDebounce(param, 200)
@@ -33,7 +35,6 @@ export default function ProjectList() {
   //使用自定义hook来取代user state
   const { data: users } = useUsers()
 
-  useDocumentTitle('项目列表',false)
 
   // useEffect(() => {
 
