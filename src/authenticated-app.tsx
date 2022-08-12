@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Row } from 'components/lib'
+import { ButtonNoPadding, Row } from 'components/lib'
 import { useAuth } from 'context/auth-context'
 import React from 'react'
 import ProjectList from 'screens/projectList/ProjectList'
@@ -9,21 +9,27 @@ import { Button, Dropdown, Menu } from 'antd'
 import {BrowserRouter, Navigate , Route , Routes} from 'react-router-dom'
 import Project from 'screens/project/Project'
 import { resetRoute } from 'utils'
+import { useState } from 'react'
+import ProjectModel from 'screens/projectList/ProjectModel'
+import ProjectPopover from 'components/project-popover'
 
 export default function AuthenticatedApp() {
+  //控制创建项目的抽屉页面 的显示和隐藏（状态提升）
+  const [projectModalOpen, setProjectModalOpen] = useState(false)
 
   return (
     <Container>   
-      <PageHeader/> 
+      <PageHeader setProjectModalOpen={setProjectModalOpen}/> 
       <Main>
         <BrowserRouter>
           <Routes>
-            <Route path='/projects' element={<ProjectList/>}/>
+            <Route path='/projects' element={<ProjectList setProjectModalOpen={setProjectModalOpen}/>}/>
             <Route path='/projects/:projectId/*' element={<Project/>}/>
             <Route index element={<Navigate to='/projects'/>} />
           </Routes>
         </BrowserRouter>
       </Main>
+      <ProjectModel projectModalOpen={projectModalOpen} onClose={ () => setProjectModalOpen(false) }/>
     </Container>
   )
 }
@@ -32,32 +38,37 @@ export default function AuthenticatedApp() {
 //:号代表后面是个变量。    *号代表什么都可以
 
 
-const PageHeader = () => {
-  const { logout ,user } = useAuth()
-
+const PageHeader = (props: { setProjectModalOpen: (isOpen: boolean)=>void }) => {
   return <Header between={true}>
     <HeaderLeft gap={true}>
       {/* 重置路由按钮 */}
-      <Button type='link' onClick={resetRoute}>
+      <ButtonNoPadding type='link' onClick={resetRoute}>
         <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
-      </Button>
-      <h3>项目</h3>
-      <h3>用户</h3>
+      </ButtonNoPadding>
+      <ProjectPopover setProjectModalOpen={props.setProjectModalOpen}/>
+      <span>用户</span>
     </HeaderLeft>
     <HeaderRight>
-    {/* overlay是下拉框 */}
-      <Dropdown overlay={
-        <Menu>
-          <Menu.Item key={'logout'}>
-            <Button type='link' onClick={logout}>登出</Button>
-          </Menu.Item>
-        </Menu>
-      }>
-        <Button type='link' onClick={e=>e.preventDefault()}>Hi, {user?.name}</Button>
-
-      </Dropdown>
+      <User/>
     </HeaderRight>
   </Header>
+}
+
+//User组件
+const User = () => {
+  const { logout ,user } = useAuth()
+
+  //overlay是下拉框
+  return <Dropdown overlay={
+    <Menu>
+      <Menu.Item key={'logout'}>
+        <Button type='link' onClick={logout}>登出</Button>
+      </Menu.Item>
+    </Menu>
+    }>
+    <Button type='link' onClick={e=>e.preventDefault()}>Hi, {user?.name}</Button>
+
+  </Dropdown>
 }
 
 const Container = styled.div`

@@ -5,7 +5,7 @@ import { cleanObject, useDebounce, useDocumentTitle, useMount } from 'utils'
 import * as qs from 'qs'
 import { useHttp } from 'utils/http'
 import styled from '@emotion/styled'
-import { Typography } from 'antd'
+import { Button, Row, Typography } from 'antd'
 import { useAsync } from 'utils/use-async'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
@@ -17,7 +17,7 @@ import { useProjectsSearchParams } from './util'
 //npm run build打包后上线读取的是.env中的变量
 const apiURL = process.env.REACT_APP_API_URL
 
-export default function ProjectList() {
+export default function ProjectList(props: { setProjectModalOpen: (isOpen: boolean)=>void }) {
   useDocumentTitle('项目列表',false)
 
   //('name' | 'personId')[]   意思是键值为name或personId的数组，写法类似于string[]
@@ -71,10 +71,13 @@ export default function ProjectList() {
 
   return (
     <Container>
-      <h1>项目列表</h1>
+      <Row justify="space-between" align='middle'>             
+        <h1>项目列表</h1>
+        <Button onClick={ ()=>props.setProjectModalOpen(true) }>创建项目</Button>
+      </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <Typography.Text type='danger'>{error.message}</Typography.Text> : null}
-      <List refresh={retry} loading={isLoading} dataSource={list || []} users={users || []} />
+      <List setProjectModalOpen={props.setProjectModalOpen} refresh={retry} loading={isLoading} dataSource={list || []} users={users || []} />
     </Container>
   )
 }
