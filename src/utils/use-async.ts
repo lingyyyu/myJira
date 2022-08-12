@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { useMountedRef } from "utils"
 
 interface State<D>{
@@ -30,20 +30,21 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
 
     const [retry,setRetry] = useState( ()=> ()=>{} )
 
-    const setData = (data : D) => setState({
+    const setData = useCallback( (data : D) => setState({
         data,
         stat: 'success',
         error: null,
-    })
+    }), [])
 
-    const setError = (error:Error) => setState({
+    const setError = useCallback( (error:Error) => setState({
         error,
         stat: 'error',
         data: null,
-    })
+    }) ,[])
 
     //run用来触发异步请求
-    const run = (promise: Promise<D>, runConfig?: {retry: () => Promise<D>}) => {
+    //使用useCallback优化异步请求
+    const run =useCallback( (promise: Promise<D>, runConfig?: {retry: () => Promise<D>}) => {
         //没有.then方法就代表不是promise
         if(!promise || !promise.then){
             throw new Error('请传入 Promise 类型数据')
@@ -55,8 +56,9 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
                 run(runConfig?.retry(), runConfig)
             }
         } )
+        //这里使用setState的函数用法，可以避免在useCallback中添加state依赖，从而造成无限循环
+        setState(prevState => ({...prevState,stat:'loading'}))
 
-        setState({...state,stat:'loading'})
         return promise.then(data => {
             if(mountedRef.current)//防止在已经卸载了的组件上赋值
                 setData(data)
@@ -66,10 +68,7 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
             if(config.throwOnError) return Promise.reject(error)
             return error
         })
-    }
-
-    
-    
+    }, [config.throwOnError, mountedRef, setData, setError])//[]useCallback需要的依赖,实际上就是函数中不是用参数传进来的,是从其它地方传进来的变量或方法
     
     return{
         isIdle: state.stat === 'idle',

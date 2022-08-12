@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { Project } from "screens/projectList/List"
 import { cleanObject } from "utils"
 import { useHttp } from "./http"
@@ -11,7 +11,7 @@ export const useProjects = (param?: Partial<Project>) => {
     //获取自定义的ajax请求hook
   const client=useHttp()
 
-  const fetchProjects = () => client('projects',{data: cleanObject(param || {})})
+  const fetchProjects = useCallback( () => client('projects',{data: cleanObject(param || {})}) , [param,client])
   
   useEffect(() => {
     //自定义hook，useAsync中的run方法
@@ -20,7 +20,7 @@ export const useProjects = (param?: Partial<Project>) => {
       retry: fetchProjects
     })
 
-  }, [param])
+  }, [param, run, fetchProjects])
   
   return result
 }

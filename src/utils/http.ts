@@ -1,6 +1,7 @@
 import QueryString from "qs"
 import * as auth from 'auth-provider'
 import { useAuth } from "context/auth-context"
+import { useCallback } from "react"
 
 const apiURL = process.env.REACT_APP_API_URL
 
@@ -47,6 +48,6 @@ export const useHttp = () => {
     const { user } = useAuth()
     //Parameters<typeof http>, ts中的Utility Types
     //从函数类型的参数中使用的类型构造一个元组类型Type
-    return (...[endpoint, config]: Parameters<typeof http>) => http(endpoint, { ...config, token: user?.token })
+    return useCallback( (...[endpoint, config]: Parameters<typeof http>) => http(endpoint, { ...config, token: user?.token }) , [user?.token] )
 }
 
