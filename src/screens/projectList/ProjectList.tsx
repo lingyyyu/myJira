@@ -17,7 +17,7 @@ import { useProjectsSearchParams } from './util'
 //npm run build打包后上线读取的是.env中的变量
 const apiURL = process.env.REACT_APP_API_URL
 
-export default function ProjectList(props: { setProjectModalOpen: (isOpen: boolean)=>void }) {
+export default function ProjectList(props: { projectButton: JSX.Element }) {
   useDocumentTitle('项目列表',false)
 
   //('name' | 'personId')[]   意思是键值为name或personId的数组，写法类似于string[]
@@ -73,11 +73,11 @@ export default function ProjectList(props: { setProjectModalOpen: (isOpen: boole
     <Container>
       <Row justify="space-between" align='middle'>             
         <h1>项目列表</h1>
-        <Button onClick={ ()=>props.setProjectModalOpen(true) }>创建项目</Button>
+        {props.projectButton}
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <Typography.Text type='danger'>{error.message}</Typography.Text> : null}
-      <List setProjectModalOpen={props.setProjectModalOpen} refresh={retry} loading={isLoading} dataSource={list || []} users={users || []} />
+      <List projectButton={props.projectButton} refresh={retry} loading={isLoading} dataSource={list || []} users={users || []} />
     </Container>
   )
 }

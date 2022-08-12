@@ -19,11 +19,15 @@ export default function AuthenticatedApp() {
 
   return (
     <Container>   
-      <PageHeader setProjectModalOpen={setProjectModalOpen}/> 
+      <PageHeader projectButton={
+        <ButtonNoPadding onClick={ ()=> setProjectModalOpen(true) } type='link'>创建项目</ButtonNoPadding>
+      } /> 
       <Main>
         <BrowserRouter>
           <Routes>
-            <Route path='/projects' element={<ProjectList setProjectModalOpen={setProjectModalOpen}/>}/>
+            <Route path='/projects' element={<ProjectList projectButton={
+              <ButtonNoPadding onClick={ ()=> setProjectModalOpen(true) } type='link'>创建项目</ButtonNoPadding>
+            }/>} />
             <Route path='/projects/:projectId/*' element={<Project/>}/>
             <Route index element={<Navigate to='/projects'/>} />
           </Routes>
@@ -38,14 +42,14 @@ export default function AuthenticatedApp() {
 //:号代表后面是个变量。    *号代表什么都可以
 
 
-const PageHeader = (props: { setProjectModalOpen: (isOpen: boolean)=>void }) => {
+const PageHeader = (props: { projectButton: JSX.Element }) => {
   return <Header between={true}>
     <HeaderLeft gap={true}>
       {/* 重置路由按钮 */}
       <ButtonNoPadding type='link' onClick={resetRoute}>
         <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
       </ButtonNoPadding>
-      <ProjectPopover setProjectModalOpen={props.setProjectModalOpen}/>
+      <ProjectPopover {...props}/>
       <span>用户</span>
     </HeaderLeft>
     <HeaderRight>
