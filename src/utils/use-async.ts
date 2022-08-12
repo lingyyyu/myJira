@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useMountedRef } from "utils"
 
 interface State<D>{
     error: Error | null,
@@ -23,6 +24,10 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
         ...defaultInitialState,
         ...initialState
     })
+
+    //使用监测组件的挂载状态的hook，防止在已经卸载了的组件上赋值
+    const mountedRef = useMountedRef()
+
     const [retry,setRetry] = useState( ()=> ()=>{} )
 
     const setData = (data : D) => setState({
@@ -53,7 +58,8 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
 
         setState({...state,stat:'loading'})
         return promise.then(data => {
-            setData(data)
+            if(mountedRef.current)//防止在已经卸载了的组件上赋值
+                setData(data)
             return data //因为是promise，内部最好要有返回值
         }).catch(error => {
             setError(error)
