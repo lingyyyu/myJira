@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useReducer, useState } from "react"
 import { useMountedRef } from "utils"
 
 interface State<D>{
@@ -17,30 +17,43 @@ const defaultConfig = {
     throwOnError: false
 }
 
+//确认组件是否还在挂载，确认仍然还在挂载后才进行useReducer的异步操作Dispatch
+const useSafeDispatch = <T>(dispatch: (...args:T[])=>void) => {
+    //使用监测组件的挂载状态的hook，防止在已经卸载了的组件上赋值
+    const mountedRef = useMountedRef()
+    return useCallback( (...args:T[])=>(mountedRef.current ? dispatch(...args) : void 0) ,[dispatch,mountedRef])
+}
+
 //自定义异步操作hook
 export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defaultConfig)=>{
     const config = {...defaultConfig, ...initialConfig}
-    const [state, setState] = useState<State<D>>({
+
+    //用usereducer改写useAsync
+    //实际上usereducer能实现的，usestate也能实现
+    //useReducer适合管理多个之前会互相影响的状态
+    //useState适合管理单个状态
+    //action可以自定义。这里的action不是传统的action，而是相当于传过来的更新的setState的值。
+    //这里的action利用了dispatch传过来的action会自动更新的原理，直接利用展开语法覆盖更新了state的属性
+    const [state, dispatch] = useReducer( (state:State<D>,action:Partial<State<D>>)=>({...state , ...action}) ,{
         ...defaultInitialState,
         ...initialState
     })
 
-    //使用监测组件的挂载状态的hook，防止在已经卸载了的组件上赋值
-    const mountedRef = useMountedRef()
+    const safeDispatch = useSafeDispatch(dispatch)
 
     const [retry,setRetry] = useState( ()=> ()=>{} )
 
-    const setData = useCallback( (data : D) => setState({
+    const setData = useCallback( (data : D) => safeDispatch({
         data,
         stat: 'success',
         error: null,
-    }), [])
+    }), [safeDispatch])
 
-    const setError = useCallback( (error:Error) => setState({
+    const setError = useCallback( (error:Error) => safeDispatch({
         error,
         stat: 'error',
         data: null,
-    }) ,[])
+    }) ,[safeDispatch])
 
     //run用来触发异步请求
     //使用useCallback优化异步请求
@@ -56,19 +69,18 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
                 run(runConfig?.retry(), runConfig)
             }
         } )
-        //这里使用setState的函数用法，可以避免在useCallback中添加state依赖，从而造成无限循环
-        setState(prevState => ({...prevState,stat:'loading'}))
+        
+        safeDispatch({stat:'loading'})
 
         return promise.then(data => {
-            if(mountedRef.current)//防止在已经卸载了的组件上赋值
-                setData(data)
+            setData(data)
             return data //因为是promise，内部最好要有返回值
         }).catch(error => {
             setError(error)
             if(config.throwOnError) return Promise.reject(error)
             return error
         })
-    }, [config.throwOnError, mountedRef, setData, setError])//[]useCallback需要的依赖,实际上就是函数中不是用参数传进来的,是从其它地方传进来的变量或方法
+    }, [config.throwOnError, setData, setError, safeDispatch])//[]useCallback需要的依赖,实际上就是函数中不是用参数传进来的,是从其它地方传进来的变量或方法
     
     return{
         isIdle: state.stat === 'idle',
