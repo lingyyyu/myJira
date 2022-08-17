@@ -1,9 +1,13 @@
 import { useCallback, useEffect } from "react"
-import { useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import { Project } from "screens/projectList/List"
 import { cleanObject } from "utils"
 import { useHttp } from "./http"
 import { useAsync } from "./use-async"
+
+//react-query中，get请求用useQuery，其它请求用useMutation
+
+
 
 //查寻Projects数据的自定义钩子(useAsync版本)
 // export const useProjects = (param?: Partial<Project>) => {   
@@ -39,36 +43,64 @@ export const useProjects = (param?: Partial<Project>) => {
 
 //编辑Project数据的自定义钩子
 //注意参数不要直接传入，不然hook会无法在函数中调用。我们将在mutate中传入参数，使用时先将mutate解构出来,这样就可以在所有地方使用hook
-export const useEditProject = () => {
-  const {run, ...asyncResult} = useAsync()
-  const client = useHttp()
-  const mutate = (params: Partial<Project>) => {
-    run(client(`projects/${params.id}`, {
-      data: params,
-      method: 'PATCH'
-    }))
-  }
+// export const useEditProject = () => {
+//   const {run, ...asyncResult} = useAsync()
+//   const client = useHttp()
+//   const mutate = (params: Partial<Project>) => {
+//     run(client(`projects/${params.id}`, {
+//       data: params,
+//       method: 'PATCH'
+//     }))
+//   }
 
-  return {
-    mutate,
-    ...asyncResult
-  }
+//   return {
+//     mutate,
+//     ...asyncResult
+//   }
+// }
+
+//useMutation版本
+export const useEditProject = () => {
+  const client = useHttp()
+  const queryClient = useQueryClient()
+  
+  //useMutation第一个参数是回调函数，第二个参数主要用来控制成功之后的操作
+  return useMutation( (params: Partial<Project>) => client(`projects/${params.id}` , {
+      method:'PATCH',
+      data:params
+    }),{
+      //成功后刷新projects查询结果         queryClient.invalidateQueries 使得匹配的查询失效并重新获取
+      onSuccess: () => queryClient.invalidateQueries('projects')
+    }
+  )
 }
 
+
 //添加Project数据的自定义钩子
-//注意参数不要直接传入，不然hook会无法在函数中调用。我们将在mutate中传入参数，使用时先将mutate解构出来,这样就可以在所有地方使用hook
 export const useAddProject = () => {
-  const {run, ...asyncResult} = useAsync()
   const client = useHttp()
-  const mutate = (params: Partial<Project>) => {
-    run(client(`projects/${params.id}`, {
+  const queryClient = useQueryClient()
+
+  return useMutation( (params: Partial<Project>) => 
+    client(`projects`, {
       data: params,
       method: 'POST'
-    }))
-  }
+    }), {
+      onSuccess: () => queryClient.invalidateQueries('projects')
+    }
+  )
 
-  return {
-    mutate,
-    ...asyncResult
-  }
+}
+
+//查询单个project项数据
+export const useProject = (id?:number) => {
+  const client = useHttp()
+  return useQuery<Project>(
+    ['project',{id}],
+    () => client(`projects/${id}`),
+    {
+      //useQuery的第三个参数是配置参数，这里意思是只有当id有值时才触发useQuery
+      enabled: Boolean(id)
+    }
+  )
 }

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { Pin } from 'components/pin'
 import { useEditProject } from 'utils/project'
 import { ButtonNoPadding } from 'components/lib'
+import { useProjectModal } from './util'
 
 export interface Project {
   id: number,
@@ -25,6 +26,10 @@ export default function List({users , ...props}: Listprops) {
 
   //使用编辑Project数据的自定义钩子
   const {mutate} = useEditProject()
+  const {startEdit} = useProjectModal()
+  const pinProject = (id:number) => (pin:boolean) => mutate({id,pin})
+  const editProject = (id:number) => () => startEdit(id)
+
 
   return <Table rowKey={"id"} pagination={false} columns={[
     {
@@ -82,8 +87,11 @@ export default function List({users , ...props}: Listprops) {
     {
       render(value, project){
         return <Dropdown overlay={<Menu>
-          <Menu.Item key={'edit'}>
-            xxx
+          <Menu.Item onClick={editProject(project.id)} key={'edit'}>
+            编辑
+          </Menu.Item>
+          <Menu.Item key={'delete'}>
+            删除
           </Menu.Item>
         </Menu>}>
           <ButtonNoPadding type='link'>...</ButtonNoPadding>
