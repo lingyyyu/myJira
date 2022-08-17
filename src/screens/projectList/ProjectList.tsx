@@ -10,14 +10,15 @@ import { useAsync } from 'utils/use-async'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
 import { useUrlQueryParam } from 'utils/url'
-import { useProjectsSearchParams } from './util'
+import { useProjectModal, useProjectsSearchParams } from './util'
+import { ButtonNoPadding } from 'components/lib'
 
 
 //npm start时读的是.env.development中的变量
 //npm run build打包后上线读取的是.env中的变量
 const apiURL = process.env.REACT_APP_API_URL
 
-export default function ProjectList(props: { projectButton: JSX.Element }) {
+export default function ProjectList() {
   useDocumentTitle('项目列表',false)
 
   //('name' | 'personId')[]   意思是键值为name或personId的数组，写法类似于string[]
@@ -34,6 +35,8 @@ export default function ProjectList(props: { projectButton: JSX.Element }) {
   const { isLoading, error, data: list, retry } = useProjects(debouncedParam)
   //使用自定义hook来取代user state
   const { data: users } = useUsers()
+  //使用控制ProjectModal开关的params
+  const {open} = useProjectModal()
 
 
   // useEffect(() => {
@@ -73,11 +76,11 @@ export default function ProjectList(props: { projectButton: JSX.Element }) {
     <Container>
       <Row justify="space-between" align='middle'>             
         <h1>项目列表</h1>
-        {props.projectButton}
+        <ButtonNoPadding onClick={open} type='link'>创建项目</ButtonNoPadding>
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <Typography.Text type='danger'>{error.message}</Typography.Text> : null}
-      <List projectButton={props.projectButton} refresh={retry} loading={isLoading} dataSource={list || []} users={users || []} />
+      <List refresh={retry} loading={isLoading} dataSource={list || []} users={users || []} />
     </Container>
   )
 }

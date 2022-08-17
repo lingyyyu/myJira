@@ -14,26 +14,20 @@ import ProjectModel from 'screens/projectList/ProjectModel'
 import ProjectPopover from 'components/project-popover'
 
 export default function AuthenticatedApp() {
-  //控制创建项目的抽屉页面 的显示和隐藏（状态提升）
-  const [projectModalOpen, setProjectModalOpen] = useState(false)
 
   return (
-    <Container>   
-      <PageHeader projectButton={
-        <ButtonNoPadding onClick={ ()=> setProjectModalOpen(true) } type='link'>创建项目</ButtonNoPadding>
-      } /> 
-      <Main>
-        <BrowserRouter>
+    <Container>
+      <BrowserRouter>   
+        <PageHeader/> 
+        <Main>        
           <Routes>
-            <Route path='/projects' element={<ProjectList projectButton={
-              <ButtonNoPadding onClick={ ()=> setProjectModalOpen(true) } type='link'>创建项目</ButtonNoPadding>
-            }/>} />
+            <Route path='/projects' element={<ProjectList />} />
             <Route path='/projects/:projectId/*' element={<Project/>}/>
             <Route index element={<Navigate to='/projects'/>} />
-          </Routes>
-        </BrowserRouter>
-      </Main>
-      <ProjectModel projectModalOpen={projectModalOpen} onClose={ () => setProjectModalOpen(false) }/>
+          </Routes>       
+        </Main>
+        <ProjectModel/>
+      </BrowserRouter>
     </Container>
   )
 }
@@ -42,14 +36,14 @@ export default function AuthenticatedApp() {
 //:号代表后面是个变量。    *号代表什么都可以
 
 
-const PageHeader = (props: { projectButton: JSX.Element }) => {
+const PageHeader = () => {
   return <Header between={true}>
     <HeaderLeft gap={true}>
       {/* 重置路由按钮 */}
       <ButtonNoPadding type='link' onClick={resetRoute}>
         <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'}/>
       </ButtonNoPadding>
-      <ProjectPopover {...props}/>
+      <ProjectPopover />
       <span>用户</span>
     </HeaderLeft>
     <HeaderRight>

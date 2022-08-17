@@ -15,7 +15,7 @@ export const useUrlQueryParam = <K extends string>(keys:K[]) => {
             } , {} as {[key in K] : string}),
             [searchParams]
         ),
-        //setSearchParam
+        //setSearchParam   设定param查询字符串
         (params: Partial<{[key in K] : unknown}>) => {
             //Object.fromEntries与Object.entries正好相反。Object.entries是转对象为数组，Object.fromEntries是转数组为对象
             const o = cleanObject({...Object.fromEntries(searchParams), ...params}) as URLSearchParamsInit
