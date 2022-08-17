@@ -13,6 +13,8 @@ export default function ProjectModel() {
 
   const {mutateAsync, error, isLoading: mutateLoading} = useMutateProject()
   const [form] = useForm()//将下方表单标记为form
+
+  //Form表单submit后自动调用onFinish,antd用onFinish取代了onSubmit
   const onFinish = (values:any) => {
     mutateAsync({...editingProject,...values}).then(()=>{
       form.resetFields()//重置表单
