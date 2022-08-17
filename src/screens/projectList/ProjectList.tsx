@@ -32,7 +32,7 @@ export default function ProjectList() {
   // const client=useHttp()
 
   //使用自定义hook来取代list，isLoading，error这些state
-  const { isLoading, error, data: list, retry } = useProjects(debouncedParam)
+  const { isLoading, error, data: list} = useProjects(debouncedParam)
   //使用自定义hook来取代user state
   const { data: users } = useUsers()
   //使用控制ProjectModal开关的params
@@ -80,7 +80,7 @@ export default function ProjectList() {
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <Typography.Text type='danger'>{error.message}</Typography.Text> : null}
-      <List refresh={retry} loading={isLoading} dataSource={list || []} users={users || []} />
+      <List loading={isLoading} dataSource={list || []} users={users || []} />
     </Container>
   )
 }
