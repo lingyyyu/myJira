@@ -22,6 +22,11 @@ export default function ProjectModel() {
     })
   }
 
+  const closeModal = () => {
+    form.resetFields()//重置表单
+    close()
+  }
+
   const title = editingProject ? '编辑项目' : '创建项目'
 
   useEffect(()=>{
@@ -29,7 +34,7 @@ export default function ProjectModel() {
   }, [editingProject, form])
 
   return (
-    <Drawer forceRender={true} onClose={close} visible={projectModalOpen} width={'100%'}>
+    <Drawer forceRender={true} onClose={closeModal} visible={projectModalOpen} width={'100%'}>
       <Container>
       {
         isLoading ? <Spin size='large'/> : <>

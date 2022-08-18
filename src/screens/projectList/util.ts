@@ -38,7 +38,7 @@ export const useProjectModal = () => {
     const startEdit = (id:number) => setEditingProjectId({editingProjectId: id})
 
     return{
-        projectModalOpen: projectCreate === 'true' || Boolean(editingProject),//url中的数据都是字符串
+        projectModalOpen: projectCreate === 'true' || Boolean(editingProjectId),//url中的数据都是字符串
         open,
         close,
         startEdit,
