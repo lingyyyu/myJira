@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useProject } from "utils/project"
-import { useUrlQueryParam } from "utils/url"
+import { useSetUrlSearchParam, useUrlQueryParam } from "utils/url"
 
 export function useProjectsSearchParams(){
     const [param, setParam] = useUrlQueryParam(['name','personId'])
@@ -26,14 +26,14 @@ export const useProjectModal = () => {
     const [{editingProjectId}, setEditingProjectId] = useUrlQueryParam(['editingProjectId'])
     const {data: editingProject, isLoading} = useProject(Number(editingProjectId))//这里的isLoading是query自带的返回值
 
-    const [_,setUrlParams] = useSearchParams()
+    const setUrlParams = useSetUrlSearchParam()
 
     const open = () => setProjectCreate({projectCreate: true})
     const close = () => {
         //这两个只能执行一个，不能两个一起执行
-        projectCreate ? setProjectCreate({projectCreate: undefined}) : setEditingProjectId({editingProjectId: undefined})
+        //projectCreate ? setProjectCreate({projectCreate: undefined}) : setEditingProjectId({editingProjectId: undefined})
         //另一种方法
-        //setUrlParams({projectCreate:'',editingProjectId:''})
+        setUrlParams({projectCreate:'',editingProjectId:''})
     }
     const startEdit = (id:number) => setEditingProjectId({editingProjectId: id})
 
