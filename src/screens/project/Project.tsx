@@ -15,7 +15,7 @@ export default function Project() {
         {/* /projects/:projectId/kanban */}
         <Route path='kanban' element={<Kanban/>}/>
         <Route path='epic' element={<Epic/>}/>
-        {/* 设置默认页面，replace=true后浏览器可以回退 */}
+        {/* 设置默认页面，replace=true后替换掉了之前的链接projects/num，浏览器可以回退 */}
         <Route index element={<Navigate to='kanban' replace={true}/>} />
       </Routes>
     </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import SearchPanel from './SearchPanel'
-import List, { Project } from './List'
+import List from './List'
+import { Project } from "../../types/Project"
 import { cleanObject, useDebounce, useDocumentTitle, useMount } from 'utils'
 import * as qs from 'qs'
 import { useHttp } from 'utils/http'

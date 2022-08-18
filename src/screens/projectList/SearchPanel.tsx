@@ -6,17 +6,9 @@ import {jsx} from '@emotion/react'
 import { Form, Input, Select } from 'antd'
 import UserSelect from 'components/user-select'
 import React, { useEffect, useState } from 'react'
-import { Project } from './List'
+import { Project } from "../../types/Project"
+import { User } from '../../types/User'
 
-
-export interface User {
-  id: number,
-  name: string,
-  email: string,
-  title: string,
-  organization: string,
-  token: string,
-}
 
 interface SearchPanelProps {
   users: User[],
