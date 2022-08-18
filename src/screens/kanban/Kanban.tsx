@@ -5,6 +5,7 @@ import { useKanbans } from 'utils/kanban'
 import { KanbanColumn } from './kanban-column'
 import { useKanbanSearchParams, useProjectInUrl } from './util'
 
+//渲染看板
 export default function Kanban() {
   useDocumentTitle('看板列表')
 
