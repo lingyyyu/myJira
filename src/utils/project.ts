@@ -1,10 +1,11 @@
 import { useCallback, useEffect } from "react"
-import { useMutation, useQuery, useQueryClient } from "react-query"
+import { QueryKey, useMutation, useQuery, useQueryClient } from "react-query"
 import { Project } from "screens/projectList/List"
 import { useProjectsSearchParams } from "screens/projectList/util"
 import { cleanObject } from "utils"
 import { useHttp } from "./http"
 import { useAsync } from "./use-async"
+import { useEditConfig, useAddConfig, useDeleteConfig} from "./use-optimistic-options"
 
 //react-query中，get请求用useQuery，其它请求用useMutation
 
@@ -61,54 +62,45 @@ export const useProjects = (param?: Partial<Project>) => {
 // }
 
 //useMutation版本
-export const useEditProject = () => {
+//QueryKey从外部传入，这样更有通用性
+export const useEditProject = (queryKey: QueryKey) => {
   const client = useHttp()
-  const queryClient = useQueryClient()
-  const [searchParams] = useProjectsSearchParams()
-  const queryKey = ['projects',searchParams] //存储的queryKey本身就是一个元组
   
   //useMutation第一个参数是回调函数，第二个参数主要用来控制成功之后的操作
   return useMutation( (params: Partial<Project>) => client(`projects/${params.id}` , {
       method:'PATCH',
       data:params
-    }),{
-      //成功后刷新projects查询结果         queryClient.invalidateQueries 使得匹配的查询失效并重新获取
-      onSuccess: () => queryClient.invalidateQueries(queryKey),
-
-      //实现乐观更新的代码onMutate，onError（比较复杂，可以不写）
-      async onMutate(target){    
-        const previousItems = queryClient.getQueryData(queryKey) //通过queryKey获取缓存的数据
-        //更新query缓存
-        queryClient.setQueryData(queryKey, (old?: Project[]) => {
-          //找到对应的project后覆盖数据
-          return old?.map(project => project.id === target.id ? {...project , ...target} : project ) || []
-        })
-        return {previousItems}
-      },
-      //乐观更新的错误回滚机制
-      onError(err, newItem, context){
-        queryClient.setQueryData(queryKey, (context as { previousItems:Project[] }).previousItems)
-      }
-      
-    }
+    }),
+    useEditConfig(queryKey)
   )
 }
 
 
 //添加Project数据的自定义钩子
-export const useAddProject = () => {
+export const useAddProject = (queryKey: QueryKey) => {
   const client = useHttp()
-  const queryClient = useQueryClient()
 
   return useMutation( (params: Partial<Project>) => 
     client(`projects`, {
       data: params,
       method: 'POST'
-    }), {
-      onSuccess: () => queryClient.invalidateQueries('projects')
-    }
+    }), 
+    useAddConfig(queryKey)
   )
 
+}
+
+
+//删除Project数据的自定义钩子
+export const useDeleteProject = (queryKey: QueryKey) => {
+  const client = useHttp()
+
+  return useMutation( ({id}: {id:number}) => 
+    client(`projects/${id}`, {
+      method: 'DELETE'
+    }), 
+    useDeleteConfig(queryKey)
+  )
 }
 
 //查询单个project项数据

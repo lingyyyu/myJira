@@ -14,6 +14,12 @@ export function useProjectsSearchParams(){
     ]as const
 } 
 
+//生成react-query的projects相关queryKey的hook
+export const useProjectsQueryKey = () => {
+    const [params] = useProjectsSearchParams()
+    return ['projects', params]
+}
+
 //控制ProjectModal开关的hook，使用param来进行控制，但注意由于用到了url param，整个被控制的内容必须包裹在<BrowserRouter>路由组件中
 export const useProjectModal = () => {
     const [{projectCreate}, setProjectCreate] = useUrlQueryParam(['projectCreate'])
