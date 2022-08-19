@@ -2,8 +2,7 @@ import { Card, Input } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { QueryKey, useMutation } from 'react-query'
 import { Task } from 'types/Task'
-import { useHttp } from 'utils/http'
-import { useEditConfig, useAddConfig, useDeleteConfig} from "utils/use-optimistic-options"
+import { useAddTask } from 'utils/task'
 import { useProjectIdInUrl, useTasksQueryKey } from './util'
 
 //创建事务
@@ -39,16 +38,3 @@ export default function CreateTask({kanbanId}: {kanbanId: number}) {
   )
 }
 
-export const useAddTask = (queryKey: QueryKey) => {
-    const client = useHttp()
-  
-    return useMutation( (params: Partial<Task>) => 
-      client(`tasks`, {
-        data: params,
-        method: 'POST'
-      }), 
-      useAddConfig(queryKey)
-    )
-  
-  }
-  

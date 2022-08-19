@@ -1,12 +1,16 @@
 import { Kanban } from "types/Kanban";
 import { useTasks } from "utils/task";
 import { useTaskTypes } from "utils/task-type";
-import { useTasksModal, useTasksSearchParams } from "./util";
+import { useKanbansQueryKey, useTasksModal, useTasksSearchParams } from "./util";
 import taskIcon from 'assets/task.svg'
 import bugIcon from 'assets/bug.svg'
 import styled from "@emotion/styled";
-import { Card } from "antd";
+import { Button, Card, Dropdown, Menu, Modal } from "antd";
 import CreateTask from "./create-task";
+import { Task } from "types/Task";
+import Mark from "components/mark";
+import { Row } from "components/lib";
+import { useDeleteKanban } from "utils/kanban";
 
 //根据任务类型显示图标（任务||bug）
 const TaskTypeIcon = ({id}: {id: number}) => {
@@ -19,27 +23,65 @@ const TaskTypeIcon = ({id}: {id: number}) => {
     return <img alt="task-icon" src={name === 'task' ? taskIcon : bugIcon} style={{width:'1.6rem'}}/>
 }
 
+const TaskCard = ({task}: {task: Task}) => {
+    //通过调用useTasksModal的hook来改变editingTaskId，实现模态框的显示和隐藏
+    const {startEdit} = useTasksModal()
+    const {name: keyword} = useTasksSearchParams()
+    //点击时生成对应模态框的editingTaskId
+    return <Card onClick={() => startEdit(task.id)} style={{marginBottom:'0.5rem', cursor:'pointer'}} key={task.id}> 
+        <p>
+            <Mark keyword={keyword} name={task.name}/>
+        </p>
+        <TaskTypeIcon id={task.typeId}/>
+    </Card>
+}
+
 
 //渲染每个看板对应的任务
 export const KanbanColumn = ({kanban}: {kanban:Kanban}) => {
     const {data: allTasks} = useTasks(useTasksSearchParams())
     const tasks = allTasks?.filter(task => task.kanbanId === kanban.id)
-    //通过调用useTasksModal的hook来改变editingTaskId，实现模态框的显示和隐藏
-    const {startEdit} = useTasksModal()
+    
     return <Container>
-        <h3>{kanban.name}</h3>
+        <Row between={true}>
+            <h3>{kanban.name}</h3>
+            <More kanban={kanban}/>
+        </Row>
         <TasksContainer>
         {
-            //点击时生成对应模态框的editingTaskId
-            tasks?.map(task => (<Card onClick={() => startEdit(task.id)} style={{marginBottom:'0.5rem', cursor:'pointer'}} key={task.id}>
-                <div>{task.name}</div> 
-                <TaskTypeIcon id={task.typeId}/>
-            </Card>))
+            tasks?.map(task => <TaskCard task={task}/>)
         }
             <CreateTask kanbanId={kanban.id}/>
         </TasksContainer>
     </Container>
 }
+
+//删除看板的方法
+const More = ({kanban}: {kanban: Kanban}) => {
+    const {mutateAsync} = useDeleteKanban(useKanbansQueryKey())
+    const startEdit = () => {
+        //Modal是对话框
+        Modal.confirm({
+            okText:'确定',
+            cancelText:'取消',
+            title:'确定删除看板吗',
+            onOk(){
+                //由于用了异步方法，所以要返回出来
+                return mutateAsync({id: kanban.id})
+            }
+        })
+    }
+    //下拉菜单
+    const overlay = <Menu>
+        <Menu.Item>
+            <Button type="link" onClick={startEdit}>删除</Button>
+        </Menu.Item>
+    </Menu>
+    return <Dropdown overlay={overlay}>
+        <Button type="link">...</Button>
+    </Dropdown>
+}
+
 
 export const Container = styled.div`
 min-width: 27rem;

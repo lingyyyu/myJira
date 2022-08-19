@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
-import { QueryKey, useMutation } from 'react-query'
 import { Kanban } from 'types/Kanban'
-import { useHttp } from 'utils/http'
 import { useKanbansQueryKey, useProjectIdInUrl } from './util'
-import { useEditConfig, useAddConfig, useDeleteConfig} from "utils/use-optimistic-options"
 import { Input } from 'antd'
 import { Container } from './kanban-column'
+import { useAddKanban } from 'utils/kanban'
 
 export default function CreateKanban() {
     const [name, setName] = useState('')
@@ -25,16 +23,5 @@ export default function CreateKanban() {
   )
 }
 
-export const useAddKanban = (queryKey: QueryKey) => {
-    const client = useHttp()
-  
-    return useMutation( (params: Partial<Kanban>) => 
-      client(`kanbans`, {
-        data: params,
-        method: 'POST'
-      }), 
-      useAddConfig(queryKey)
-    )
-  
-}
+
   

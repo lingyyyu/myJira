@@ -2,7 +2,7 @@ import { QueryKey, useMutation, useQuery } from "react-query"
 import { Task } from "types/Task"
 import { useDebounce } from "utils"
 import { useHttp } from "./http"
-import { useEditConfig } from "./use-optimistic-options"
+import { useDeleteConfig, useEditConfig, useAddConfig } from "./use-optimistic-options"
 
 //查寻task列表的自定义钩子(useQuery版本)
 export const useTasks = (param?: Partial<Task>) => {   
@@ -36,5 +36,28 @@ export const useEditTask = (queryKey:QueryKey) => {
         data: params,
       }),
     useEditConfig(queryKey)
+  )
+}
+
+export const useAddTask = (queryKey: QueryKey) => {
+  const client = useHttp()
+
+  return useMutation( (params: Partial<Task>) => 
+    client(`tasks`, {
+      data: params,
+      method: 'POST'
+    }), 
+    useAddConfig(queryKey)
+  )
+}
+
+export const useDeleteTask = (queryKey: QueryKey) => {
+  const client = useHttp()
+
+  return useMutation( ({id}: {id:number}) => 
+    client(`tasks/${id}`, {
+      method: 'DELETE'
+    }), 
+    useDeleteConfig(queryKey)
   )
 }
