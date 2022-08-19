@@ -8,6 +8,7 @@ import { useTasks } from 'utils/task'
 import CreateKanban from './create-kanban'
 import { KanbanColumn } from './kanban-column'
 import { SearchPanel } from './search-panel'
+import TaskModal from './task-modal'
 import { useKanbanSearchParams, useProjectInUrl, useTasksSearchParams } from './util'
 
 //渲染看板
@@ -29,6 +30,7 @@ export default function Kanban() {
       }
       <CreateKanban/>
       </ColumnsContainer>}
+      <TaskModal/>
     </ScreenContainer>
   )
 }

@@ -1,6 +1,7 @@
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import { useProject } from "utils/project"
+import { useTask } from "utils/task"
 import { useUrlQueryParam } from "utils/url"
 
 export const useProjectIdInUrl = () => {
@@ -28,6 +29,7 @@ export const useTasksSearchParams = () => {
     ])
     //返回当前task对应的project
     const projectId = useProjectIdInUrl()
+
     return useMemo( () => ({
         projectId,
         typeId: Number(param.typeId) || undefined,
@@ -38,3 +40,24 @@ export const useTasksSearchParams = () => {
 }
 //将当前task对应的projectid作为queryKey来区分存储
 export const useTasksQueryKey = () => ['tasks', useTasksSearchParams()]
+
+//编辑看板的模态框
+export const useTasksModal = () => {
+    const [{editingTaskId}, setEditingTaskId] = useUrlQueryParam(['editingTaskId'])
+    const {data: editingTask, isLoading} = useTask(Number(editingTaskId))
+
+    const startEdit = useCallback( (id:number) => {
+        setEditingTaskId({editingTaskId: id})
+    } ,[setEditingTaskId])
+    const close = useCallback( () => {
+        setEditingTaskId({editingTaskId: ''})
+    } ,[setEditingTaskId])
+
+    return {
+        editingTaskId,
+        editingTask,
+        startEdit,
+        close,
+        isLoading
+    }
+}

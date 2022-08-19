@@ -1,7 +1,7 @@
 import { Kanban } from "types/Kanban";
 import { useTasks } from "utils/task";
 import { useTaskTypes } from "utils/task-type";
-import { useTasksSearchParams } from "./util";
+import { useTasksModal, useTasksSearchParams } from "./util";
 import taskIcon from 'assets/task.svg'
 import bugIcon from 'assets/bug.svg'
 import styled from "@emotion/styled";
@@ -16,7 +16,7 @@ const TaskTypeIcon = ({id}: {id: number}) => {
     if(!name) {
         return null
     }
-    return <img src={name === 'task' ? taskIcon : bugIcon} style={{width:'1.6rem'}}/>
+    return <img alt="task-icon" src={name === 'task' ? taskIcon : bugIcon} style={{width:'1.6rem'}}/>
 }
 
 
@@ -24,11 +24,14 @@ const TaskTypeIcon = ({id}: {id: number}) => {
 export const KanbanColumn = ({kanban}: {kanban:Kanban}) => {
     const {data: allTasks} = useTasks(useTasksSearchParams())
     const tasks = allTasks?.filter(task => task.kanbanId === kanban.id)
+    //通过调用useTasksModal的hook来改变editingTaskId，实现模态框的显示和隐藏
+    const {startEdit} = useTasksModal()
     return <Container>
         <h3>{kanban.name}</h3>
         <TasksContainer>
         {
-            tasks?.map(task => (<Card style={{marginBottom:'0.5rem'}} key={task.id}>
+            //点击时生成对应模态框的editingTaskId
+            tasks?.map(task => (<Card onClick={() => startEdit(task.id)} style={{marginBottom:'0.5rem', cursor:'pointer'}} key={task.id}>
                 <div>{task.name}</div> 
                 <TaskTypeIcon id={task.typeId}/>
             </Card>))
