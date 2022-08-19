@@ -11,6 +11,7 @@ import { Task } from "types/Task";
 import Mark from "components/mark";
 import { Row } from "components/lib";
 import { useDeleteKanban } from "utils/kanban";
+import React from "react";
 
 //根据任务类型显示图标（任务||bug）
 const TaskTypeIcon = ({id}: {id: number}) => {
@@ -38,23 +39,23 @@ const TaskCard = ({task}: {task: Task}) => {
 
 
 //渲染每个看板对应的任务
-export const KanbanColumn = ({kanban}: {kanban:Kanban}) => {
+export const KanbanColumn = React.forwardRef<HTMLDivElement, {kanban:Kanban}>( ({kanban, ...props}, ref) => {
     const {data: allTasks} = useTasks(useTasksSearchParams())
     const tasks = allTasks?.filter(task => task.kanbanId === kanban.id)
     
-    return <Container>
+    return <Container {...props} ref={ref}>
         <Row between={true}>
             <h3>{kanban.name}</h3>
-            <More kanban={kanban}/>
+            <More kanban={kanban} key={kanban.id}/>
         </Row>
         <TasksContainer>
         {
-            tasks?.map(task => <TaskCard task={task}/>)
+            tasks?.map(task => <TaskCard key={task.id} task={task}/>)
         }
             <CreateTask kanbanId={kanban.id}/>
         </TasksContainer>
     </Container>
-}
+} )
 
 //删除看板的方法
 const More = ({kanban}: {kanban: Kanban}) => {
