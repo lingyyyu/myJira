@@ -1,5 +1,7 @@
+import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import { useProject } from "utils/project"
+import { useUrlQueryParam } from "utils/url"
 
 export const useProjectIdInUrl = () => {
     const {pathname} = useLocation()
@@ -16,7 +18,23 @@ export const useKanbanSearchParams = () => ({projectId: useProjectIdInUrl()})
 //将当前kanban对应的projectid作为queryKey来区分存储
 export const useKanbansQueryKey = () => ['kanbans', useKanbanSearchParams()]
 
-//返回当前task对应的project
-export const useTasksSearchParams = () => ({projectId: useProjectIdInUrl()})
+
+export const useTasksSearchParams = () => {
+    const [param, setParam] = useUrlQueryParam([
+        'name',
+        'typeId',
+        'processorId',
+        'tagId'
+    ])
+    //返回当前task对应的project
+    const projectId = useProjectIdInUrl()
+    return useMemo( () => ({
+        projectId,
+        typeId: Number(param.typeId) || undefined,
+        processorId: Number(param.processorId) || undefined,
+        tagId: Number(param.tagId) || undefined,
+        name: param.name
+    }) ,[projectId,param])
+}
 //将当前task对应的projectid作为queryKey来区分存储
 export const useTasksQueryKey = () => ['tasks', useTasksSearchParams()]

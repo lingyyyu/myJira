@@ -3,6 +3,7 @@ import React from 'react'
 import { useDocumentTitle } from 'utils'
 import { useKanbans } from 'utils/kanban'
 import { KanbanColumn } from './kanban-column'
+import { SearchPanel } from './search-panel'
 import { useKanbanSearchParams, useProjectInUrl } from './util'
 
 //渲染看板
@@ -14,6 +15,7 @@ export default function Kanban() {
   return (
     <div>
       <h1>{currentProject?.name}看板</h1>
+      <SearchPanel/>
       <ColumnsContainer>
       {
         kanbans?.map(kanban => <KanbanColumn kanban={kanban} key={kanban.id}/>)
