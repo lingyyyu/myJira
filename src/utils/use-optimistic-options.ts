@@ -30,3 +30,6 @@ export const useDeleteConfig = (queryKey: QueryKey) => useConfig(queryKey, (targ
 export const useEditConfig = (queryKey: QueryKey) => useConfig(queryKey, (target, old) => old?.map(item => item.id === target.id ? {...item, ...target} : item) || [])
 
 export const useAddConfig = (queryKey: QueryKey) => useConfig(queryKey, (target, old) => old ? [...old, target] : [])
+
+//拖拽后重排序的乐观更新
+export const useReorderConfig = (queryKey: QueryKey) => useConfig(queryKey, (target, old) => old || [])

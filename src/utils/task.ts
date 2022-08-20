@@ -2,7 +2,8 @@ import { QueryKey, useMutation, useQuery } from "react-query"
 import { Task } from "types/Task"
 import { useDebounce } from "utils"
 import { useHttp } from "./http"
-import { useDeleteConfig, useEditConfig, useAddConfig } from "./use-optimistic-options"
+import { SortProps } from "./kanban"
+import { useDeleteConfig, useEditConfig, useAddConfig, useReorderConfig } from "./use-optimistic-options"
 
 //查寻task列表的自定义钩子(useQuery版本)
 export const useTasks = (param?: Partial<Task>) => {   
@@ -59,5 +60,20 @@ export const useDeleteTask = (queryKey: QueryKey) => {
       method: 'DELETE'
     }), 
     useDeleteConfig(queryKey)
+  )
+}
+
+//持久化拖拽内容
+export const useReorderTask = (queryKey: QueryKey) => {
+  const client = useHttp()
+  return useMutation(
+    (params: SortProps) => {
+      return client('tasks/reorder' , {
+        data: params,
+        method: 'POST'
+      })
+    },
+    //乐观更新
+    useReorderConfig(queryKey)
   )
 }
