@@ -29,20 +29,22 @@ export default function Kanban() {
         <SearchPanel/>
         {
           isLoading ? <Spin size='large'/> :  (
-            //用Drop包裹住需要拖拽的地方
-            //类型：列，方向：水平，droppableId：可以随意命名
-            <Drop type='COLUMN' direction='horizontal' droppableId='kanban'>
-              <ColumnsContainer>
-              {
-                kanbans?.map( (kanban,index) => (
-                  <Drag key={kanban.id} draggableId={'kanban'+ kanban.id} index={index}>
-                    <KanbanColumn kanban={kanban} key={kanban.id}/>
-                  </Drag>
-                ))
-              }
+            <ColumnsContainer>
+              {/* 用Drop包裹住需要拖拽的地方
+              类型：列，方向：水平，droppableId：可以随意命名 */}
+              <Drop type='COLUMN' direction='horizontal' droppableId='kanban'>
+                <DropChild style={{display:'flex'}}>
+                {
+                  kanbans?.map( (kanban,index) => (
+                    <Drag key={kanban.id} draggableId={'kanban'+ kanban.id} index={index}>
+                      <KanbanColumn kanban={kanban} key={kanban.id}/>
+                    </Drag>
+                  ))
+                }
+                </DropChild>
+              </Drop>
               <CreateKanban/>
-              </ColumnsContainer>
-            </Drop>
+            </ColumnsContainer>
           )
         }
         <TaskModal/>
@@ -51,7 +53,7 @@ export default function Kanban() {
   )
 }
 
-export const ColumnsContainer = styled(DropChild)`
+export const ColumnsContainer = styled('div')`
   display: flex;
   overflow-x: scroll;
   flex: 1;
