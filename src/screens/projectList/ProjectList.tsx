@@ -12,7 +12,7 @@ import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
 import { useUrlQueryParam } from 'utils/url'
 import { useProjectModal, useProjectsSearchParams } from './util'
-import { ButtonNoPadding } from 'components/lib'
+import { ButtonNoPadding, ScreenContainer } from 'components/lib'
 
 
 //npm start时读的是.env.development中的变量
@@ -74,7 +74,7 @@ export default function ProjectList() {
   // })
 
   return (
-    <Container>
+    <ScreenContainer>
       <Row justify="space-between" align='middle'>             
         <h1>项目列表</h1>
         <ButtonNoPadding onClick={open} type='link'>创建项目</ButtonNoPadding>
@@ -82,13 +82,10 @@ export default function ProjectList() {
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <Typography.Text type='danger'>{error.message}</Typography.Text> : null}
       <List loading={isLoading} dataSource={list || []} users={users || []} />
-    </Container>
+    </ScreenContainer>
   )
 }
 
-const Container = styled.div`
-padding: 3.2rem;
-`
 
 //打开whyDidYouRender排查工具
 //ProjectList.whyDidYouRender = true
