@@ -3,7 +3,7 @@ import { Task } from "types/Task"
 import { useDebounce } from "utils"
 import { useHttp } from "./http"
 import { SortProps } from "./kanban"
-import { useDeleteConfig, useEditConfig, useAddConfig, useReorderConfig } from "./use-optimistic-options"
+import { useDeleteConfig, useEditConfig, useAddConfig, useReorderTaskConfig } from "./use-optimistic-options"
 
 //查寻task列表的自定义钩子(useQuery版本)
 export const useTasks = (param?: Partial<Task>) => {   
@@ -74,6 +74,6 @@ export const useReorderTask = (queryKey: QueryKey) => {
       })
     },
     //乐观更新
-    useReorderConfig(queryKey)
+    useReorderTaskConfig(queryKey)
   )
 }

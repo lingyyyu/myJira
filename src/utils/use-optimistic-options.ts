@@ -1,4 +1,6 @@
 import { QueryKey, useQueryClient } from "react-query";
+import { Task } from "types/Task";
+import { reorder } from "./reorder";
 
 //生成react-Query的第三个参数的配置（自动刷新以及乐观更新）
 //增删改查具有共同代码，只有在 return callback(target, old) 处具有不同
@@ -32,4 +34,15 @@ export const useEditConfig = (queryKey: QueryKey) => useConfig(queryKey, (target
 export const useAddConfig = (queryKey: QueryKey) => useConfig(queryKey, (target, old) => old ? [...old, target] : [])
 
 //拖拽后重排序的乐观更新
-export const useReorderConfig = (queryKey: QueryKey) => useConfig(queryKey, (target, old) => old || [])
+export const useReorderKanbanConfig = (queryKey: QueryKey) =>
+  useConfig(queryKey, (target, old) => reorder({ list: old, ...target }));
+
+export const useReorderTaskConfig = (queryKey: QueryKey) =>
+  useConfig(queryKey, (target, old) => {
+    const orderedList = reorder({ list: old, ...target }) as Task[];
+    return orderedList.map((item) =>
+      item.id === target.fromId
+        ? { ...item, kanbanId: target.toKanbanId }
+        : item
+    );
+  });

@@ -2,7 +2,7 @@ import { useQuery } from "react-query"
 import { Kanban } from "types/Kanban"
 import { useHttp } from "./http"
 import { QueryKey, useMutation } from 'react-query'
-import { useEditConfig, useAddConfig, useDeleteConfig, useReorderConfig} from "utils/use-optimistic-options"
+import { useEditConfig, useAddConfig, useDeleteConfig, useReorderKanbanConfig} from "utils/use-optimistic-options"
 
 //查寻kanban列表的自定义钩子(useQuery版本)
 export const useKanbans = (param?: Partial<Kanban>) => {   
@@ -58,6 +58,6 @@ export const useReorderKanban = (queryKey: QueryKey) => {
       })
     },
     //乐观更新
-    useReorderConfig(queryKey)
+    useReorderKanbanConfig(queryKey)
   )
 }
