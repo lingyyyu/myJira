@@ -4,6 +4,7 @@ import React from 'react'
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Epic from 'screens/epic/Epic'
 import Kanban from 'screens/kanban/Kanban'
+import KanbanVisual from 'screens/kanbanVisual'
 
 //区分路径是看板还是任务组的小hook
 const useRouteType = () => {
@@ -26,6 +27,9 @@ export default function Project() {
           <Menu.Item key={'epic'}>
             <Link to={'epic'}>任务组</Link>
           </Menu.Item>
+          <Menu.Item key={'kanbanVisual'}>
+            <Link to={'kanbanVisual'}>可视化概览</Link>
+          </Menu.Item>
         </Menu>       
       </Aside>
       <Main>
@@ -33,6 +37,7 @@ export default function Project() {
           {/* /projects/:projectId/kanban */}
           <Route path='kanban' element={<Kanban/>}/>
           <Route path='epic' element={<Epic/>}/>
+          <Route path='kanbanVisual' element={<KanbanVisual/>}/>
           {/* 设置默认页面，replace=true后替换掉了之前的链接projects/num，浏览器可以回退 */}
           <Route index element={<Navigate to='kanban' replace={true}/>} />
         </Routes>

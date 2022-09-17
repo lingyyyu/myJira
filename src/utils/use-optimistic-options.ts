@@ -11,6 +11,7 @@ export const useConfig = (queryKey: QueryKey, callback: (target: any, old?: any[
       onSuccess: () => queryClient.invalidateQueries(queryKey),
 
       //实现乐观更新的代码onMutate，onError
+      //onMutate在useMutation时立即触发，返回的{}会自动储存在context中
       async onMutate(target: any){    
         const previousItems = queryClient.getQueryData(queryKey) //通过queryKey获取缓存的数据
         //更新query缓存
